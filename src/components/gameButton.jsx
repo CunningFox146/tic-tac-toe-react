@@ -1,9 +1,10 @@
 import React from "react";
+import "../gameButton.css";
 
-const GameButton = ({ onClick }) => {
+const GameButton = ({ val, id, onClick }) => {
 	return (
-		<button className="btn btn-dark m-1" onClick={onClick}>
-			t
+		<button className="game-button btn btn-dark m-1" onClick={() => onClick(id)}>
+			{val && val}
 		</button>
 	);
 };
