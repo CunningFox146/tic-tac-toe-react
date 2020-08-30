@@ -5,7 +5,7 @@ function renderWinner(winner) {
 	return (
 		<span className="navbar-brand">
 			Winner:
-			<span className="badge badge-secondary">{winner}</span>
+			<span className="badge badge-success">{winner}</span>
 		</span>
 	);
 }

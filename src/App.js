@@ -1,39 +1,62 @@
 import React, { Component } from "react";
 import GameField from "./components/gameField";
 import Navbar from "./components/navbar";
+import History from "./components/history";
 
 class App extends Component {
 	state = {
 		btns: [],
 		isX: true,
 		winner: null,
+		history: [],
 	};
 
 	render() {
-		this.field = (
-			<GameField btns={this.state.btns} handleButton={this.handleButton} />
-		);
 		return (
 			<React.Fragment>
 				<Navbar resetGame={this.resetGame} winner={this.state.winner} />
-				{this.field}
+				<GameField btns={this.state.btns} handleButton={this.handleButton} />
+				<History history={this.state.history} onClick={this.loadMove} />
 			</React.Fragment>
 		);
 	}
 
 	resetGame = () => {
-		this.setState({ winner: null, btns: [], isX: true });
+		this.setState({ winner: null, btns: [], isX: true, history: [] });
 	};
 
 	handleButton = (id) => {
 		if (this.state.btns[id] || this.state.winner) return;
 		let btns = [...this.state.btns];
 		const isX = this.state.isX;
-		btns[id] = isX ? "X" : "O";
+		const val = isX ? "X" : "O";
+		btns[id] = val;
 
 		const winner = this.calculateWinner(btns);
 
 		this.setState({ btns, winner, isX: !isX });
+		this.saveMove(id, val);
+	};
+
+	saveMove(id, val) {
+		const history = [...this.state.history];
+		history.push({ id, val });
+		this.setState({ history });
+	}
+
+	loadMove = (idx) => {
+		console.log("Rollback to", idx);
+		const btns = [...this.state.btns];
+		const rollback = this.state.history.slice(idx);
+		rollback.forEach((item) => {
+			delete btns[item.id];
+		});
+
+		this.setState({
+			btns,
+			history: this.state.history.slice(0, idx),
+			winner: this.calculateWinner(btns),
+		});
 	};
 
 	calculateWinner(squares) {
